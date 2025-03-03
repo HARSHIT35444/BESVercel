@@ -1,0 +1,10 @@
+DATABASE_URL="postgresql://postgres:3544@localhost:5432/Bombay_Engineering_Syndicate?schema=public"
+
+
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=harshitsh3544@gmail.com
+EMAIL_PASSWORD=vfaw oopu gkkd ocbk
+EMAIL_FROM="Your Company Name <harshitsh3544@gmail.com>"
+EMAIL_TO=harshitsh3544@gmail.com
