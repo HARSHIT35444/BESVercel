@@ -18,16 +18,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Add API configuration for handling uploads
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb', // Increase size limit for file uploads
-    },
-    responseLimit: false,
-  },
-  // Ensure server can handle file uploads
   serverRuntimeConfig: {
     projectRoot: process.cwd(),
+    // Configure file upload limits
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
   },
 };
 

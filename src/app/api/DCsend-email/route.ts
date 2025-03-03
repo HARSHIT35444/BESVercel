@@ -1,7 +1,36 @@
 // File: app/api/send-email/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { Readable } from 'stream';
+
+interface ExistingMotorData {
+  make?: string;
+  kw?: string;
+  hp?: string;
+  rpm?: string;
+  mounting?: string;
+  pole?: string;
+  application?: string;
+}
+
+interface MotorFormData {
+  motorType?: string;
+  application?: string;
+  dutyDescription?: string;
+  kw?: string;
+  hp?: string;
+  armatureVoltage?: string;
+  fieldVoltage?: string;
+  baseRpm?: string;
+  speedVariation?: string;
+  overloadClass?: string;
+  delivery?: string;
+  deliveryDutyDescription?: string;
+  offerRequirement?: 'estimated' | 'firm';
+  description?: string;
+  replacement?: 'yes' | 'no';
+  existingMotor?: ExistingMotorData;
+  otherSpecs?: string;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -68,7 +97,7 @@ export async function POST(req: NextRequest) {
 }
 
 // Function to generate plain text email body
-function createEmailBody(data: any): string {
+function createEmailBody(data: MotorFormData): string {
   let body = 'DC MOTOR ENQUIRY FORM SUBMISSION\n\n';
   body += '------- MOTOR SPECIFICATIONS -------\n';
   body += `Type of Motor: ${data.motorType || 'Not specified'}\n`;
@@ -101,12 +130,12 @@ function createEmailBody(data: any): string {
   
   if (data.replacement === 'yes') {
     body += '\n------- EXISTING MOTOR DETAILS -------\n';
-    body += `Make: ${data.existingMotor.make || 'Not specified'}\n`;
-    body += `Power: ${data.existingMotor.kw || 'Not specified'} KW / ${data.existingMotor.hp || 'Not specified'} HP\n`;
-    body += `RPM: ${data.existingMotor.rpm || 'Not specified'}\n`;
-    body += `Mounting: ${data.existingMotor.mounting || 'Not specified'}\n`;
-    body += `Pole: ${data.existingMotor.pole || 'Not specified'}\n`;
-    body += `Application: ${data.existingMotor.application || 'Not specified'}\n`;
+    body += `Make: ${data.existingMotor?.make || 'Not specified'}\n`;
+    body += `Power: ${data.existingMotor?.kw || 'Not specified'} KW / ${data.existingMotor?.hp || 'Not specified'} HP\n`;
+    body += `RPM: ${data.existingMotor?.rpm || 'Not specified'}\n`;
+    body += `Mounting: ${data.existingMotor?.mounting || 'Not specified'}\n`;
+    body += `Pole: ${data.existingMotor?.pole || 'Not specified'}\n`;
+    body += `Application: ${data.existingMotor?.application || 'Not specified'}\n`;
   }
   
   if (data.otherSpecs) {
@@ -118,7 +147,7 @@ function createEmailBody(data: any): string {
 }
 
 // Function to generate HTML email body
-function createHtmlEmailBody(data: any): string {
+function createHtmlEmailBody(data: MotorFormData): string {
   let html = `
     <h1 style="color: #333;">DC Motor Enquiry Form Submission</h1>
     <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9;">
@@ -202,27 +231,27 @@ function createHtmlEmailBody(data: any): string {
       <table style="width: 100%; border-collapse: collapse;">
         <tr>
           <td style="padding: 8px; border-bottom: 1px solid #eee; width: 30%;"><strong>Make:</strong></td>
-          <td style="padding: 8px; border-bottom: 1px solid #eee;">${data.existingMotor.make || 'Not specified'}</td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee;">${data.existingMotor?.make || 'Not specified'}</td>
         </tr>
         <tr>
           <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Power:</strong></td>
-          <td style="padding: 8px; border-bottom: 1px solid #eee;">${data.existingMotor.kw || 'Not specified'} KW / ${data.existingMotor.hp || 'Not specified'} HP</td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee;">${data.existingMotor?.kw || 'Not specified'} KW / ${data.existingMotor?.hp || 'Not specified'} HP</td>
         </tr>
         <tr>
           <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>RPM:</strong></td>
-          <td style="padding: 8px; border-bottom: 1px solid #eee;">${data.existingMotor.rpm || 'Not specified'}</td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee;">${data.existingMotor?.rpm || 'Not specified'}</td>
         </tr>
         <tr>
           <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Mounting:</strong></td>
-          <td style="padding: 8px; border-bottom: 1px solid #eee;">${data.existingMotor.mounting || 'Not specified'}</td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee;">${data.existingMotor?.mounting || 'Not specified'}</td>
         </tr>
         <tr>
           <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Pole:</strong></td>
-          <td style="padding: 8px; border-bottom: 1px solid #eee;">${data.existingMotor.pole || 'Not specified'}</td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee;">${data.existingMotor?.pole || 'Not specified'}</td>
         </tr>
         <tr>
           <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Application:</strong></td>
-          <td style="padding: 8px; border-bottom: 1px solid #eee;">${data.existingMotor.application || 'Not specified'}</td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee;">${data.existingMotor?.application || 'Not specified'}</td>
         </tr>
       </table>`;
   }
